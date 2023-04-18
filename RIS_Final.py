@@ -20,6 +20,7 @@ GPIO.setup(18, GPIO.OUT)
 GPIO.output(16, GPIO.HIGH)
 GPIO.output(18, GPIO.HIGH)
 camera_flag=0
+
 ##################CAMERA INIT##################################
 cap = cv2.VideoCapture(0) #Catpure video from camera
 Ht = 320 #Defined Height of frame
@@ -30,13 +31,13 @@ _, frame = cap.read() #Store captured frame of camera to variable "frame"
 rows, cols, ch = frame.shape #Get frame size 
 x_medium = int(cols / 2) #Initialize horizontal position 
 y_medium = int(rows / 2) #Initialize vertical positon
-
 x_center = int(cols / 2) #Initialize Horizontal center position
 y_center = int(rows / 2) #Initialize Vertical center position
 x_position = 90 # centre posito of servo 
 y_position = 90 # centre posito of servo
 x_band = 50
 y_band = 50
+
 ##################################################################
 def compare_strings(str1):
     if(str1.find("b'1'")):
@@ -44,16 +45,16 @@ def compare_strings(str1):
     else:
         return 0
      
-    return count1 == count2
+return count1 == count2
 # The callback for when the client receives a connect response from the server.
-def on_connect(client, userdata, flags, rc):
+    def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
 
-    # on_connect() means that if we lose the connection and reconnect then subscriptions will be renewed.
+# on_connect() means that if we lose the connection and reconnect then subscriptions will be renewed.
     client.subscribe(MQTT_PATH)
 
 # The callback for when a PUBLISH message is received from the server.
-def on_message(client, userdata, msg):
+    def on_message(client, userdata, msg):
     
     global camera_flag
     print(str(msg.payload))
@@ -61,16 +62,13 @@ def on_message(client, userdata, msg):
     #print(result.find(":0"))
     if(result.find(":0")!=-1):
         camera_flag=1
-    
-    
-    # more callbacks, etc
-
+	
+# more callbacks, etc
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(MQTT_SERVER, 1883, 60)
 
-    
 def button_callback(channel):
         global camera_flag
         print('motor running....')
@@ -88,9 +86,11 @@ def reverse(x):
         print("Moving Backward")
         time.sleep(x)
         GPIO.output(Backward, GPIO.LOW)
+	
 time.sleep(3)
 GPIO.output(16, GPIO.LOW)
 GPIO.output(18, GPIO.LOW)
+
 while (1):
         #client.loop_forever() #   
         client.loop_start()
@@ -121,7 +121,7 @@ while (1):
         cv2.line(frame2, (0, y_medium), (Wd, y_medium), (0, 255, 0), 2) #Draw Vertical centre line of red object
         cv2.imshow("IN Frame", frame2) #Printing frame with rectangle &  lines
 
-            # Move Horizontal Servo servo motor
+         # Move Horizontal Servo servo motor
         if x_medium < x_center - x_band:
             x_position -= 1
         elif x_medium > x_center + x_band:
@@ -144,8 +144,7 @@ while (1):
             y_position = 0
         else:
             y_position = y_position
-            
-
+	
         ###############END OF CAMERA CODE################################
         if camera_flag:
             print("x =", x_medium , "y =", y_medium)   
@@ -156,19 +155,13 @@ while (1):
             time.sleep(2)
             GPIO.output(Relay_solenoid_sw2, GPIO.LOW)
        
-            
-        key = cv2.waitKey(1)
-        if key == 27:
+            key = cv2.waitKey(1)
+            if key == 27:
             #kit.servo[0].angle =(90) 
             #kit.servo[1].angle =(90) 
             print("key", key)    
             break
             
-            
-            
-
-
-
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
 # Other loop*() functions are available that give a threaded interface and a
